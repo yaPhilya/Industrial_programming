@@ -7,42 +7,38 @@ services:
     environment:
       # POSTGRES_DB: mydb
       POSTGRES_PASSWORD: qwerty
+    volumes:
+      - ./db:/var/lib/postgresql/data
     networks:
-     - net_123
+      - net_123
 
   adminer:
     image: adminer
     restart: always
+    ports:
+      - "8080:8080"
     networks:
-     - net_123
+      - net_123
 
   receive:
     build: ./rec_test
+    volumes:
+      - ./rec_test:/code
+    links:
+      - db
+      - rabbit
+      - adminer
     depends_on:
-     - db
-     - adminer
-     - send
+      - db
+      - adminer
+      - rabbit
     networks:
-     - net_123
-    depends_on:
-     - rabbit
-     - send
-
-  send:
-    build: ./send_test
-    networks:
-     - net_123
-    depends_on:
-     - rabbit
-     - db
-     - adminer
-
+      - net_123
 
   rabbit:
     image: rabbitmq
     networks:
-     - net_123
-
+      - net_123
 
 networks:
  net_123:
