@@ -34,6 +34,7 @@ if __name__ == "__main__":
 		cur.execute("SELECT * FROM strings")
 		for row in cur:
 			print(row, flush=True)
+		conn.commit()
 		conn.close()
 
 	channel.basic_consume(callback, queue='hello_2', no_ack=True)
